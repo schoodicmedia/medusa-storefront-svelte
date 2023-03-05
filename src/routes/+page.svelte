@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script lang="ts">
+    import { getAllProducts, productStore } from '$lib/store';
+	import { onMount } from 'svelte';
+
+    onMount(() => {
+        getAllProducts();
+    })
+</script>
+
+{#if $productStore}
+    {#each $productStore.allProducts as product}
+        <img src={product.thumbnail} style:width="200px"/>
+    {/each}
+{:else}
+    <p>Loading...</p>
+{/if}
