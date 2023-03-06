@@ -1,6 +1,6 @@
 import { get, writable } from "svelte/store";
 import { createClient } from "./client";
-import type { Product, Region } from "@medusajs/medusa"
+import type { Product, Region, StoreGetProductsParams } from "@medusajs/medusa"
 
 interface ProductStore {
     allProducts: Product[],
@@ -13,11 +13,17 @@ interface RegionStore {
 
 const medusaClient = createClient();
 
-export const productStore = writable<ProductStore>();
-export const regionStore = writable<RegionStore>();
+export const productStore = writable<ProductStore>({
+    allProducts: [],
+    currentProduct: null
+});
 
-export const getAllProducts = async () => {
-    const res = await medusaClient.products.list();
+export const regionStore = writable<RegionStore>({
+    allRegions: []
+});
+
+export const getAllProducts = async (query?: StoreGetProductsParams) => {
+    const res = await medusaClient.products.list(query);
     productStore.set({
         allProducts: res.products,
         currentProduct: null,

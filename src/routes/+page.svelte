@@ -1,23 +1,39 @@
 <script lang="ts">
 	import Product from '$lib/Product.svelte';
     import { getAllProducts, getAllRegions, productStore, regionStore } from '$lib/store';
-	import { Grid, Row } from 'carbon-components-svelte';
+	import type { Region } from '@medusajs/medusa';
+	import { Grid, Row, SkeletonPlaceholder } from 'carbon-components-svelte';
 	import { onMount } from 'svelte';
 
+    let defaultRegion: Region | null = null;
+    $: defaultRegion;
+
     onMount(() => {
-        getAllProducts();
         getAllRegions();
+
+        regionStore.subscribe(
+            ({allRegions}) => {
+                defaultRegion = allRegions[0];
+                getAllProducts({region_id: defaultRegion.id});
+            }
+        )
     })
 </script>
 
-{#if $productStore && $regionStore}
+{#if $productStore.allProducts && defaultRegion}
     <Grid>
         <Row>
             {#each $productStore.allProducts as product}
-            <Product product={product} region={$regionStore.allRegions[0]}/>
+            <Product product={product} region={defaultRegion}/>
             {/each}
         </Row>
     </Grid>
 {:else}
-    <p>Loading...</p>
+    <Grid>
+        <Row>
+            {#each Array(12).fill('') as index}
+                <SkeletonPlaceholder />
+            {/each}
+        </Row>
+    </Grid>
 {/if}

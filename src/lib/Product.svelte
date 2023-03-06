@@ -12,5 +12,5 @@
 <Tile light>
      <ImageLoader src={productPreview.thumbnail || ''} style="width: 200px;"/>
     <p>{productPreview.title}</p>
-    <p><strong>{productPreview.price?.original_price}</strong></p>
+    <p><strong>{productPreview.price?.calculated_price}</strong></p>
 </Tile>
